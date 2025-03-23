@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 @Repository
 public interface  wordRepository extends CrudRepository<Word,String>{
+
 }
