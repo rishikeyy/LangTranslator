@@ -5,11 +5,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RequestBodyDTO {
-    private String textSource;
-    private String sourceLangCode;
-    private String targetLangCode;
-    private String format;
-    private String alternatives;
-    private String api_key;
+    public String textSource;
+    public String sourceLangCode;
+    public String targetLangCode;
+    public String format;
+    public String alternatives;
+    public String api_key;
 
 }
