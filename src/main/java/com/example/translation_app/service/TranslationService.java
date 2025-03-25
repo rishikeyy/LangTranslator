@@ -41,14 +41,16 @@ public class TranslationService {
             }
             //else call Translate API and insert in DB
             else{
-                String result = restClient.post()
+                RepoEntityenes result = restClient.post()
                         .uri(libreTranslateUrl+"/translate")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(requestBody)
-                        .retrieve() // Perform the request and retrieve the response
-                        .bodyToMono(String.class);
+                        .body(requestBody)
+                        .retrieve()
+                        .bodyToMono(RepoEntityenes.class); // Perform the request and retrieve the response
+
                 System.out.println(result);
-                //wordRepositoryenes.save();
+
+                wordRepositoryenes.save();
 
             }
         }
