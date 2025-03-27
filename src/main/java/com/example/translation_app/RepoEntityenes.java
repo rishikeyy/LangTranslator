@@ -14,9 +14,9 @@ public class RepoEntityenes {
 
 
         @Id
-        private String source;  // 'source' is the primary key
+        public String source;  // 'source' is the primary key
 
-        private String target;
+        public String target;
 
 
 }

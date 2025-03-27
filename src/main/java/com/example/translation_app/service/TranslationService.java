@@ -1,5 +1,6 @@
 package com.example.translation_app.service;
 
+import com.example.translation_app.LibreTranslateResponseDTO;
 import com.example.translation_app.RepoEntityenes;
 import com.example.translation_app.RequestBodyDTO;
 import com.example.translation_app.repository.WordRepositoryenes;
@@ -41,16 +42,20 @@ public class TranslationService {
             }
             //else call Translate API and insert in DB
             else{
-                RepoEntityenes result = restClient.post()
+                LibreTranslateResponseDTO result = restClient.post()
                         .uri(libreTranslateUrl+"/translate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(requestBody)
                         .retrieve()
-                        .bodyToMono(RepoEntityenes.class); // Perform the request and retrieve the response
+                        .body(LibreTranslateResponseDTO.class);//convert response to entity
 
-                System.out.println(result);
 
-                wordRepositoryenes.save();
+               // System.out.println(result);
+                //Tailor repoentity using request attribute("source") and result attribute("translatedText")
+                RepoEntityenes repoEntityenesDTO=new RepoEntityenes() ;
+                repoEntityenesDTO.source=requestBody.textSource;
+                repoEntityenesDTO.target=result.translatedText;
+                wordRepositoryenes.save(repoEntityenesDTO);//put repoentityenesDTO object to this repo
 
             }
         }
