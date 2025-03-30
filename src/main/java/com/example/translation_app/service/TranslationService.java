@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -25,12 +27,23 @@ public class TranslationService {
     @Autowired
     WordRepositoryenes wordRepositoryenes;
 
+    @Cacheable(value = "Lang", key = "#requestBodyDTO.textSource")
     Optional<RepoEntityenes> enesDB(RequestBodyDTO requestBodyDTO){
-       return wordRepositoryenes.findById(requestBodyDTO.sourceLangCode);
+       // String key=requestBodyDTO.textSource;
+
+       return wordRepositoryenes.findById(requestBodyDTO.textSource);
+    }
+
+    @CachePut(value = "Lang", key = "#repoEntityenesDTO")
+    void RepoSave(String source, String target){
+        RepoEntityenes repoEntityenesDTO=new RepoEntityenes() ;
+        repoEntityenesDTO.source=source;
+        repoEntityenesDTO.target=target;//use here result.alternatives[0] coz result.translatedText is not returning unique values
+        wordRepositoryenes.save(repoEntityenesDTO); //put repoentityenesDTO object to this repo
     }
     public ResponseEntity<String> getTranslation(RequestBodyDTO requestBody) {
         ResponseEntity<String>finalResponse=new ResponseEntity<>(HttpStatus.OK);
-        //check in cache
+
 
 
         //check in DB
@@ -56,10 +69,10 @@ public class TranslationService {
 
                // System.out.println(result);
                 //Tailor repoentity using request attribute("source") and result attribute("translatedText")
-                RepoEntityenes repoEntityenesDTO=new RepoEntityenes() ;
-                repoEntityenesDTO.source=requestBody.textSource;
-                repoEntityenesDTO.target=result.translatedText;//use here result.alternatives[0] coz result.translatedText is not returning unique values
-                wordRepositoryenes.save(repoEntityenesDTO);//put repoentityenesDTO object to this repo
+
+
+                RepoSave(requestBody.textSource,result.translatedText);
+
                 finalResponse= new ResponseEntity<String>(result.translatedText, HttpStatus.OK);
 
             }
