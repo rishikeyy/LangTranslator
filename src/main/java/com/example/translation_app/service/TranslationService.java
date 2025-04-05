@@ -34,12 +34,14 @@ public class TranslationService {
        return wordRepositoryenes.findById(requestBodyDTO.textSource);
     }
 
-    @CachePut(value = "Lang", key = "#repoEntityenesDTO")
-    void RepoSave(String source, String target){
+    @Cacheable(value = "Lang", key = "#source")
+    String RepoSave(String source, String target){
         RepoEntityenes repoEntityenesDTO=new RepoEntityenes() ;
         repoEntityenesDTO.source=source;
         repoEntityenesDTO.target=target;//use here result.alternatives[0] coz result.translatedText is not returning unique values
         wordRepositoryenes.save(repoEntityenesDTO); //put repoentityenesDTO object to this repo
+        System.out.println("---------------Sourc is" + source);
+        return target;
     }
     public ResponseEntity<String> getTranslation(RequestBodyDTO requestBody) {
         ResponseEntity<String>finalResponse=new ResponseEntity<>(HttpStatus.OK);
